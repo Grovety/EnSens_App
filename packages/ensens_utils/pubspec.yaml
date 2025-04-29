@@ -1,0 +1,33 @@
+name: ensens_utils
+description: Esens algorithms, widgets, utils.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '^3.6.0'
+  
+dependencies:
+  # data, storage
+  dart_mappable: "4.3.0"
+  path: "1.9.0"
+  path_provider: "2.1.5"
+  sqflite: "2.4.1"
+  sqflite_common_ffi: "2.3.4+4"
+  collection: "1.19.0"
+  # internalization related packages
+  easy_localization: "3.0.7+1"
+  # ble
+  flutter_blue_plus: "1.35.2"
+  geolocator: "13.0.2" # needs for ble
+  # ui
+  syncfusion_flutter_charts: "28.2.6"
+  syncfusion_flutter_gauges: "28.2.6"
+  bordered_text: "2.0.0"
+
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  # flutter_gen related packages
+  build_runner: "2.4.14"
+  dart_mappable_builder: "4.3.1"

@@ -1,0 +1,62 @@
+name: ensens_app
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.1
+
+dependencies:
+  # specific packages
+  flutter_native_splash: "2.4.4"
+
+  # data structure packages
+  dart_mappable: "4.3.0"
+
+  # internalization related packages
+  easy_localization: "3.0.7+1"
+  easy_localization_loader: "2.0.2"
+  easy_localization_yaml: "0.1.2"
+
+  # custom packages
+  ensens_utils:
+    path: packages/ensens_utils # Models, algorithms, ui, config.
+
+  # core packages
+  flutter_bloc: "9.0.0"
+  bloc: "9.0.0"
+  nested: "1.0.0"
+
+  # default packages
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  # flutter_gen related packages
+  build_runner: "2.4.14"
+  flutter_gen_runner: "5.9.0"
+  dart_mappable_builder: "4.3.1"
+  flutter_launcher_icons: "^0.14.3"
+
+  # default packages
+  flutter_test:
+    sdk: flutter
+  flutter_lints: "5.0.0"
+
+flutter:
+  assets:
+    - assets/
+    - assets/translations/
+
+  # default settings
+  uses-material-design: true
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/icon/icon.png" # mipmap-xxxhdpi from https://appicon.co/
+  min_sdk_android: 21
+  ios: false
+
+flutter_native_splash:
+  android_gravity: center
+  color: "#FFFFFF"
