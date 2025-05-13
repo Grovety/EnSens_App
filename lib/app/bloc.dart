@@ -180,7 +180,7 @@ final class AppBloc extends Bloc<AppEvent, AppState> {
     if (_deviceId == null) {
       return;
     }
-    final int historyLength = await _storage.getHistoryLength();
+    int historyLength = await _storage.getHistoryLength();
     final DateTime now = DateTime.now()
       ..copyWith(second: 0, millisecond: 0, microsecond: 0);
     // empty history case
@@ -194,22 +194,28 @@ final class AppBloc extends Bloc<AppEvent, AppState> {
         return;
       }
     }
-    DateTime lastHistoryTs = await _storage.getLastHistoryTs();
-    DateTime firstHistoryTs = await _storage.getFirstHistoryTs();
+    DateTime? lastHistoryTs = await _storage.getLastHistoryTs();
+    DateTime? firstHistoryTs = await _storage.getFirstHistoryTs();
 
     final int maxDays = EnsensConfig().kHistoryMaxLenDays;
-    // int historyDays = lastHistoryTs.difference(firstHistoryTs).inDays;
+    final DateTime targetFrom =
+        DateTime(now.year, now.month, now.day - maxDays);
 
     // outdated data:
     // delete old rows
-    if (now.difference(firstHistoryTs).inDays > maxDays) {
+    if (firstHistoryTs != null &&
+        now.difference(firstHistoryTs).inDays > maxDays) {
       // delete all not relevant data
-      final DateTime targetFrom =
-          DateTime(now.year, now.month, now.day - maxDays);
-      final int deleted = await _deleteHistory(firstHistoryTs, targetFrom);
-      assert(deleted > 0);
+      // that starts from more than required days for display on graph
+      await _deleteHistory(firstHistoryTs, targetFrom);
+      historyLength = await _storage.getHistoryLength();
       lastHistoryTs = await _storage.getLastHistoryTs();
-      firstHistoryTs = await _storage.getLastHistoryTs();
+      firstHistoryTs = await _storage.getFirstHistoryTs();
+    }
+
+    if (lastHistoryTs == null || firstHistoryTs == null) {
+      lastHistoryTs = now;
+      firstHistoryTs = targetFrom;
     }
     // actual data:
     // read exist history and update it or graph if needed
@@ -226,8 +232,8 @@ final class AppBloc extends Bloc<AppEvent, AppState> {
       await _storeHistoryFromDevice(lastHistoryTs, now);
       final DateTime previousTs = lastHistoryTs;
       lastHistoryTs = await _storage.getLastHistoryTs()
-        ..copyWith(second: 0, millisecond: 0, microsecond: 0);
-      minutesDiff = lastHistoryTs.difference(previousTs).inMinutes;
+        ?..copyWith(second: 0, millisecond: 0, microsecond: 0);
+      minutesDiff = lastHistoryTs!.difference(previousTs).inMinutes;
       if (minutesDiff > 0) {
         needsUpdateChart = true;
       }

@@ -43,21 +43,23 @@ final class EnsensStorage {
   Future<int> getHistoryLength() =>
       _history.getHistoryLength(deviceId: deviceId);
 
-  Future<DateTime> getLastHistoryTs() async {
+  Future<DateTime?> getLastHistoryTs() async {
     final Map<String, dynamic> raw =
         await getSingleHistory(deviceId: deviceId, last: true);
-    return DateTime.fromMillisecondsSinceEpoch(raw['timestamp']! as int);
+    return raw.isNotEmpty ? DateTime.fromMillisecondsSinceEpoch(raw['timestamp']! as int) : null;
   }
 
-  Future<DateTime> getFirstHistoryTs() async {
+  Future<DateTime?> getFirstHistoryTs() async {
     final Map<String, dynamic> raw = await getSingleHistory(deviceId: deviceId);
-    return DateTime.fromMillisecondsSinceEpoch(raw['timestamp']! as int);
+    return raw.isNotEmpty ? DateTime.fromMillisecondsSinceEpoch(raw['timestamp'] as int) : null;
   }
 
   Future<Map<String, dynamic>> getSingleHistory(
-          {int? deviceId, bool last = false}) async =>
-      (await _history.getHistory(deviceId: deviceId, last: last, limit: 1))
-          .first;
+      {int? deviceId, bool last = false}) async {
+    final List<Map<String, dynamic>> entries =
+        await _history.getHistory(deviceId: deviceId, last: last, limit: 1);
+    return entries.isNotEmpty ? entries.first : <String, dynamic>{};
+  }
 
   Future<List<Map<String, dynamic>>> getHistory(
           {int? deviceId,
